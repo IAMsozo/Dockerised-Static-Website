@@ -188,4 +188,3 @@ ensured that the script used the right working directory and shell. This fixed i
 - **License**: MIT
 
 Feel free to modify and adapt this setup. Enjoy your Dockerized static website!
-```
