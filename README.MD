@@ -1,4 +1,4 @@
-```markdown
+
 # Dockerized Static Website Project
 
 A simple project demonstrating how to package and serve a static HTML site called "Waso Strategy" (downloaded from [TooPlates](https://www.tooplates.com/)) with **Nginx** in a Docker container. We’ll also automate the Docker image build and push process to Docker Hub using a **Bash script** and **Cron**.
