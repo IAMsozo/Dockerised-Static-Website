@@ -1,4 +1,4 @@
-```
+```markdown
 # Dockerized Static Website Project
 
 A simple project demonstrating how to package and serve a static HTML site called "Waso Strategy" (downloaded from [TooPlates](https://www.tooplates.com/)) with **Nginx** in a Docker container. We’ll also automate the Docker image build and push process to Docker Hub using a **Bash script** and **Cron**.
@@ -7,14 +7,14 @@ A simple project demonstrating how to package and serve a static HTML site calle
 
 ## Table of Contents
 
-1. [Overview](#overview)
-2. [Project Structure](#project-structure)
-3. [Creating the Dockerfile](#creating-the-dockerfile)
-4. [Building the Docker Image](#building-the-docker-image)
-5. [Running the Container](#running-the-container)
-6. [Automating (Optional)](#automating-optional)
-7. [Setting Up Cron (Optional)](#setting-up-cron-optional)
-8. [Lessons Learned](#lessons-learned)
+1. [Overview](#overview)  
+2. [Project Structure](#project-structure)  
+3. [Creating the Dockerfile](#creating-the-dockerfile)  
+4. [Building the Docker Image](#building-the-docker-image)  
+5. [Running the Container](#running-the-container)  
+6. [Automating (Optional)](#automating-optional)  
+7. [Setting Up Cron (Optional)](#setting-up-cron-optional)  
+8. [Lessons Learned](#lessons-learned)  
 9. [Credits and License](#credits-and-license)
 
 ---
@@ -28,7 +28,7 @@ A simple project demonstrating how to package and serve a static HTML site calle
   - Basic **Docker** commands (`build`, `run`, `push`)  
   - Optional automation with a **Bash script** and **Cron**  
 
-This project is a quick-start for anyone learning **Docker** or wanting an easy way to host a static site, scripting basics and setting up a Cron task.
+This project is a quick-start for anyone learning **Docker** or wanting an easy way to host a static site, along with some scripting basics and setting up a Cron task.
 
 ---
 
@@ -37,17 +37,17 @@ This project is a quick-start for anyone learning **Docker** or wanting an easy 
 ```
 ├── .gitignore
 ├── README.MD
-waso_strategy/
-├── css/
-├── fonts/
-├── images/
-├── js/
-├── ABOUT THIS TEMPLATE.txt
-├── Dockerfile
-├── docker_push_auto.sh       <-- Listed in .gitignore, but present
-├── docker_push_auto.sh.log   <-- Listed in .gitignore, but present
-├── index.html
-├── project-detail.html
+└── waso_strategy/
+    ├── css/
+    ├── fonts/
+    ├── images/
+    ├── js/
+    ├── ABOUT THIS TEMPLATE.txt
+    ├── Dockerfile
+    ├── docker_push_auto.sh        <-- Listed in .gitignore, but present
+    ├── docker_push_auto.sh.log    <-- Listed in .gitignore, but present
+    ├── index.html
+    └── project-detail.html
 ```
 
 - **`css/`, `fonts/`, `images/`, `js/`**: Folders containing all static assets.  
@@ -72,28 +72,27 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-### Explanation
+**Explanation**  
+- `FROM nginx:latest`: Uses the official Nginx image as a base.  
+- `RUN rm -rf /usr/share/nginx/html/*`: Removes default Nginx web content.  
+- `COPY . /usr/share/nginx/html`: Copies everything in `waso_strategy/` into the container’s Nginx directory.  
+- `EXPOSE 80`: Exposes port 80 to the host.  
+- `CMD ["nginx", "-g", "daemon off;"]`: Runs Nginx in the foreground so Docker keeps the container alive.
 
-- **FROM nginx:latest**: Uses the official Nginx image as a base.  
-- **RUN rm -rf /usr/share/nginx/html/***: Removes default Nginx web content.  
-- **COPY . /usr/share/nginx/html**: Copies everything in `waso_strategy/` into the container’s Nginx directory.  
-- **EXPOSE 80**: Exposes port 80 to the host.  
-- **CMD ["nginx", "-g", "daemon off;"]**: Runs Nginx in the foreground so Docker keeps the container alive.
-
-> **Note**: You may want a **`.dockerignore`** to prevent copying unnecessary files (e.g., `.git`, `docker_push_auto.sh`, logs) into the image.
+> **Note**: You may want a `.dockerignore` file to prevent copying unnecessary files (e.g., `.git`, `docker_push_auto.sh`, logs) into the image.
 
 ---
 
 ## Building the Docker Image
 
-From the **`waso_strategy/`** directory:
+From the **`waso_strategy/`** directory, run:
 
 ```bash
 docker build -t my-static-website .
 ```
 
-- `-t my-static-website`: Names the image `my-static-website`.  
-- The final `.` indicates the `Dockerfile` is in the current directory.
+- **`-t my-static-website`**: Names the image `my-static-website`.  
+- The final `.` indicates the Dockerfile is in the current directory.
 
 ---
 
@@ -105,15 +104,17 @@ To run your Dockerized static site locally:
 docker run -d -p 8080:80 --name static-site my-static-website
 ```
 
-- `-d`: Detached mode, runs in the background.  
-- `-p 8080:80`: Maps port 8080 on your machine to port 80 inside the container.  
-- `--name static-site`: Gives the container a friendly name for easy reference.
+- **`-d`**: Detached mode, runs in the background.  
+- **`-p 8080:80`**: Maps port 8080 on your machine to port 80 inside the container.  
+- **`--name static-site`**: Gives the container a friendly name for easy reference.
 
-Visit **`http://localhost:8080`** to see your website.
+Visit [http://localhost:8080](http://localhost:8080) to see your website.
 
 ---
 
-## Automating Building and Pushing Image  to Dockerhub (Optional)
+## Automating (Optional)
+
+### Building and Pushing the Image to Docker Hub
 
 If you’d like to automate pushing your image to Docker Hub, you could use **`docker_push_auto.sh`** (already in `.gitignore` but checked in). A simplified version might be:
 
@@ -137,26 +138,30 @@ docker push "${DOCKER_USERNAME}/${DOCKER_IMAGE}:${DOCKER_TAG}"
 echo "Done."
 ```
 
-> **Note**: Storing credentials in plain text is a security risk. Use environment variables or secret managers in production. This will be demonstrated in another version.
+> **Note**: Storing credentials in plain text is a security risk. Use environment variables or a secret manager in production. This version is for demonstration only.
+
 ---
 
 ## Setting Up Cron (Optional)
 
-You can schedule **`docker_push_auto.sh`** to run at specific times using **Cron**:
+You can schedule **`docker_push_auto.sh`** to run at specific times using Cron.
 
-1. **Make the script executable**:
+1. Make the script executable:
    ```bash
    chmod +x docker_push_auto.sh
    ```
-2. **Edit crontab**:
+
+2. Edit your crontab:
    ```bash
    crontab -e
    ```
-3. **Add a cron entry** (example: 2:30 AM daily):
-   ```bash
+
+3. Add a cron entry (example: 2:30 AM daily):
+   ```cron
    30 2 * * * cd /absolute/path/to/waso_strategy/ && /bin/bash /absolute/path/to/waso_strategy/docker_push_auto.sh >> /absolute/path/to/waso_strategy/docker_push_auto.sh.log 2>&1
    ```
-4. **Check logs**:
+
+4. Check logs:
    ```bash
    cat /absolute/path/to/waso_strategy/docker_push_auto.sh.log
    ```
@@ -166,20 +171,21 @@ You can schedule **`docker_push_auto.sh`** to run at specific times using **Cron
 
 ## Lessons Learned
 
-> **Challenges Faced**  
-> One of the main hurdles was getting the Cron job to reference the correct directory. Cron runs in a limited environment, so running  
-> ```
-> cd /absolute/path/to/waso_strategy/ && /bin/bash /absolute/path/to/waso_strategy/docker_push_auto.sh
-> ```  
-> ensured that the script used the right working directory and shell. This fixed issues where the Dockerfile wasn’t found using relative paths (`docker build .`).
+### Challenges Faced
+One of the main hurdles was getting the Cron job to reference the correct directory. Cron runs in a limited environment, so running:
+```bash
+cd /absolute/path/to/waso_strategy/ && /bin/bash /absolute/path/to/waso_strategy/docker_push_auto.sh
+```
+ensured that the script used the right working directory and shell. This fixed issues where the Dockerfile wasn’t found using relative paths (e.g., `docker build .`).
 
 ---
 
 ## Credits and License
 
-- **Website Template**: [TooPlates](https://www.tooplates.com/)  
-- **Docker & Nginx**: Official Docker images from [Docker Hub](https://hub.docker.com/)  
-- **Author**: *Your Name* ([@IAMsozo](https://github.com/IAMsozo))  
+- **Website Template**: [TooPlates](https://www.tooplates.com)  
+- **Docker & Nginx**: Official Docker images from Docker Hub  
+- **Author**: Your Name ([@IAMsozo](https://github.com/IAMsozo))  
 - **License**: MIT
 
-Feel free to modify and adapt this setup. Enjoy your **Dockerized static website**!
+Feel free to modify and adapt this setup. Enjoy your Dockerized static website!
+```
